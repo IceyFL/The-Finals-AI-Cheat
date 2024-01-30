@@ -13,7 +13,7 @@ To use it you simply download this directory and then compile it as a release bu
 
 # How to Make your own
 
-This app is made so you can easily modify it for your own use.
+This app is made so you can easily modify it for your own use and different games.
 
 1. You will want to replace load.onnx with another .onnx file you can find these online in places such as the Aimmy discord.
 you need to ensure that the file is named load.onnx and that you have set it as an embedded file.
