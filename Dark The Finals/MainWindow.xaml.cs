@@ -52,8 +52,8 @@ namespace Paster
         public Dictionary<string, dynamic> PasterSettings = new()
         {
             { "FOV_Size", 200 },
-            { "Mouse_Sens", 0.80 },
-            { "Mouse_SensY", 0.85 },
+            { "Mouse_Sens", 0.70 },
+            { "Mouse_SensY", 0.75 },
             { "Y_Offset", 0 },
             { "X_Offset", 0 },
             { "AI_Min_Conf", 15 }
