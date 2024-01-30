@@ -461,35 +461,6 @@ namespace Paster
             }
         }
 
-        private async Task LoadConfigAsync(string path)
-        {
-            if (File.Exists(path))
-            {
-                string json = await File.ReadAllTextAsync(path);
-
-                var config = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(json);
-                if (config != null)
-                {
-                    foreach (var (key, value) in config)
-                    {
-                        if (PasterSettings.TryGetValue(key, out var currentValue))
-                        {
-                            PasterSettings[key] = value;
-                        }
-                    }
-                }
-            }
-
-            // We'll attempt to update the AI Settings but it may not be loaded yet.
-            try
-            {
-                _onnxModel.ConfidenceThreshold = (float)(PasterSettings["AI_Min_Conf"] / 100.0f);
-            }
-            catch { }
-
-            ReloadMenu();
-        }
-
         private void ReloadMenu()
         {
             AimScroller.Children.Clear();
