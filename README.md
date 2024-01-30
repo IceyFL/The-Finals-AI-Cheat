@@ -1,4 +1,4 @@
-#The Finals AI Cheat
+# The Finals AI Cheat
 
 This is a cheat currently Made for The Finals.
 It is based off of https://github.com/Babyhamsta/Aimmy
@@ -7,11 +7,11 @@ It is based off of https://github.com/Babyhamsta/Aimmy
 
 
 
-#How to use
+# How to use
 
 To use it you simply download this directory and then compile it as a release build in visual studio.
 
-#How to Make your own
+# How to Make your own
 
 This app is made so you can easily modify it for your own use.
 
