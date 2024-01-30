@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Paster": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}
