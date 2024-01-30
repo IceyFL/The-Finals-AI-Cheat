@@ -21,7 +21,6 @@ namespace Paster
     public partial class MainWindow : Window
     {
         double sens2;
-        bool isDiscordActive = false;
         bool leftButtonDown = (Control.MouseButtons & MouseButtons.Left) == MouseButtons.Left;
         bool rightButtonDown = (Control.MouseButtons & MouseButtons.Right) == MouseButtons.Right;
 
@@ -421,7 +420,7 @@ namespace Paster
 
                         // Save the embedded resource to a temporary file
                         string tempFilePath = Path.Combine(Path.GetTempPath(), "load.onnx");
-                        SaveEmbeddedResourceToFile("msedge.load.onnx", tempFilePath);
+                        SaveEmbeddedResourceToFile("Spotify.load.onnx", tempFilePath);
 
                         // Load the model from the temporary file
                         _onnxModel?.Dispose();
