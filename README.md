@@ -1,6 +1,6 @@
 # The Finals AI Cheat
 
-<a href="[https://discord.gg/nPwjaJk](https://discord.gg/MpSKK9epc7)"><img src="https://discord.com/api/guilds/757966278936756345/embed.png"/></a>
+<a href="[https://discord.gg/nPwjaJk](https://discord.gg/MpSKK9epc7)"><img src="https://discord.com/api/guilds/1196887077971828896/embed.png"/></a>
 
 This is a cheat currently Made for The Finals.
 It is based off of https://github.com/Babyhamsta/Aimmy
