@@ -23,7 +23,7 @@ add this function to mainwindow.xaml.cs
                     {
                         string key10 = key.Substring(0, Math.Min(10, key.Length));
                         long longkey = long.Parse(key);
-                        string url = "https://jsonblob.com/api/1202286949942812672";
+                        string url = "https://jsonblob.com/api/";
                         using (HttpClient client = new HttpClient())
                         {
                             try
