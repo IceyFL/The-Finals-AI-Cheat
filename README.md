@@ -8,6 +8,9 @@ It is currently undetected in the finals and possibly other EAC games.
 
 A compiled version is available for free in my [discord](https://discord.gg/MpSKK9epc7)
 
+If you are struggling to remake it for a seperate game join my discord and for $25 i can make the cheat work for a different game if you provide me with the .onnx file(you can find these in the aimmy discord server)
+also for $50 i can do that and add a key system for you.
+
 ![image](https://github.com/IceyFL/The-Finals-AI-Cheat/assets/82657910/a4dbcbda-ae25-4673-bdeb-203b69b4b60a)
 
 
