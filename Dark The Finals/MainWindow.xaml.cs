@@ -50,12 +50,12 @@ namespace Paster
         // Changed to Dynamic from Double because it was making the Config System hard to rework :/
         public Dictionary<string, dynamic> PasterSettings = new()
         {
-            { "FOV_Size", 200 },
-            { "Mouse_Sens", 0.70 },
+            { "FOV_Size", 145 },
+            { "Mouse_Sens", 0.65 },
             { "Mouse_SensY", 0.75 },
             { "Y_Offset", 0 },
             { "X_Offset", 0 },
-            { "AI_Min_Conf", 15 }
+            { "AI_Min_Conf", 25 }
         };
 
         private Dictionary<string, bool> toggleState = new()
@@ -64,15 +64,7 @@ namespace Paster
 
         };
 
-        private Thickness WinTooLeft = new(-1680, 0, 1680, 0);
-        private Thickness WinVeryLeft = new(-1120, 0, 1120, 0);
-        private Thickness WinLeft = new(-560, 0, 560, 0);
-
         private Thickness WinCenter = new(0, 0, 0, 0);
-
-        private Thickness WinRight = new(560, 0, -560, 0);
-        private Thickness WinVeryRight = new(1120, 0, -1120, 0);
-        private Thickness WinTooRight = new(1680, 0, -1680, 0);
 
         public MainWindow()
         {
