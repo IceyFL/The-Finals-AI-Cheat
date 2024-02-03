@@ -8,8 +8,8 @@ It is currently undetected in the finals and possibly other EAC games.
 
 A compiled version is available for free in my [discord](https://discord.gg/MpSKK9epc7)
 
-If you are struggling to remake it for a seperate game join my discord and for $25 i can make the cheat work for a different game if you provide me with the .onnx file(you can find these in the aimmy discord server)
-also for $50 i can do that and add a key system for you so you can sell it.
+If you are struggling to remake it for a seperate game join my discord and for $10 i can make the cheat work for a different game if you provide me with the .onnx file(you can find these in the aimmy discord server)
+also for another $15 i can do that and add a key system for you so you can sell it.
 My discord user is @presidentelmo if you want to message me about this.
 
 
