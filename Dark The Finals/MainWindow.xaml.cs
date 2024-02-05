@@ -1,9 +1,8 @@
-﻿using Paster.Class;
+﻿using InputBindings;
+using Paster.Class;
 using Paster.UserController;
 using PasterAimbot;
-using Newtonsoft.Json;
 using System;
-using InputBindings;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -28,15 +27,11 @@ namespace Paster
 
         private readonly BrushConverter brushcolor = new();
 
-        private int TimeSinceLastClick = 0;
-        private DateTime LastClickTime = DateTime.MinValue;
 
-        private const uint MOUSEEVENTF_LEFTDOWN = 0x0002;
-        private const uint MOUSEEVENTF_LEFTUP = 0x0004;
         private const uint MOUSEEVENTF_MOVE = 0x0001; // Movement flag
 
         private static int ScreenWidth = Screen.PrimaryScreen.Bounds.Width;
-        private static int ScreenHeight = Screen.PrimaryScreen.Bounds.Height;   
+        private static int ScreenHeight = Screen.PrimaryScreen.Bounds.Height;
 
         private AIModel _onnxModel;
         private InputBindingManager bindingManager;
@@ -45,26 +40,33 @@ namespace Paster
         private enum MenuPosition
         {
             AimMenu,
+            RecoilMenu
         }
 
         // Changed to Dynamic from Double because it was making the Config System hard to rework :/
         public Dictionary<string, dynamic> PasterSettings = new()
         {
-            { "FOV_Size", 145 },
-            { "Mouse_Sens", 0.65 },
-            { "Mouse_SensY", 0.75 },
-            { "Y_Offset", 0 },
+            { "FOV_Size", 380 },
+            { "Mouse_Sens", 0.75 },
+            { "Mouse_SensY", 0.95 },
+            { "Y_Offset", 70 },
             { "X_Offset", 0 },
-            { "AI_Min_Conf", 25 }
+            { "AI_Min_Conf", 0.70 },
+            { "RecoilGun", 0 },
+            { "GameSens", 50 },
+            { "FPSLimit", 40 }
         };
 
         private Dictionary<string, bool> toggleState = new()
         {
-            { "AimbotToggle", false }
+            { "AimbotToggle", false },
+            { "ConstantAimbot", false }
 
         };
 
+
         private Thickness WinCenter = new(0, 0, 0, 0);
+        private Thickness WinLeft = new(-560, 0, 560, 0);
 
         public MainWindow()
         {
@@ -91,11 +93,13 @@ namespace Paster
 
             // Load UI
             InitializeMenuPositions();
-            ReloadMenu();
+            LoadAimMenu();
+            LoadRecoilMenu();
 
             // Start the loop that runs the model
             Task.Run(() => StartModelCaptureLoop());
             Task.Run(() => TitleLoop());
+            Task.Run(() => StartRecoilLoop());
             InitializeModel();
         }
 
@@ -192,8 +196,133 @@ namespace Paster
                     this.Title = title;
                 });
                 await Task.Delay(2000);
+            }
+        }
+
+        private void Recoil()
+        {
+            uint selectedGun = Convert.ToUInt32(PasterSettings["RecoilGun"]);
+            double sensitivity = PasterSettings["GameSens"];
+            int interval = 0;
+            List<(double, double)> selectedGunRecoilPattern = new List<(double, double)>();
+            switch (selectedGun)
+            {
+                case 1:
+                    interval = 110;
+                    sensitivity = sensitivity * 2.6;
+                    selectedGunRecoilPattern = new List<(double, double)>
+                    {
+                    (0, 5), (0.75, 4.5), (1.5, 4.5), (-0.5, 1), (-1.5, 1), (-1.25, 1), (-2.5, 1),
+                    (0, 1), (2.5, 1), (2, 1), (2, 1), (-2, 1), (-2.5, 1), (-2, 1), (-1, 1),
+                    (-1, 0.75), (-1, 0.75), (1, 0.75), (1, 0.5), (0, 0), (0, 0), (0, 0), (0, 0)
+                    };
+                    break;
+
+                case 2:
+                    interval = 135;
+                    sensitivity = sensitivity * 3.1;
+                    selectedGunRecoilPattern = new List<(double, double)>
+                    {
+                    (0, 5), (-1, 4), (-1, 5), (-0.5, 4), (-1, 4.5), (-1, 4), (-1, 4), (-1, 2),
+                    (-1, 0.7), (-0.5, 0.2), (-1, -0.5), (-0.5, -0.3), (-1, -0.3), (-1, -0.5),
+                    (0, -0.5), (0, 0), (0, 0), (0, 0), (0, 0)
+                    };
+                    break;
+
+                case 3:
+                    interval = 130;
+                    sensitivity = sensitivity * 2.4;
+                    selectedGunRecoilPattern = new List<(double, double)>
+                    {
+                    (1, 4), (1, 5), (0, 3), (-1, 3), (-2.5, 3), (-2.25, 2.25), (0, 2.25), (0, 2.25),
+                    (0, 2), (0, 2), (0, 2), (0, 2), (0, 2), (0, 1), (0, 1), (0, 0), (0, 1), (0.5, 1),
+                    (1, 1), (1, 1.5), (1, 1), (1, 0), (0.5, 0), (1, 0), (0.5, 0), (1, 0), (0.5, 0),
+                    (0.5, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)
+                    };
+                    break;
+
+                case 4:
+                    interval = 140;
+                    sensitivity = sensitivity * 2.5;
+                    selectedGunRecoilPattern = new List<(double, double)>
+                    {
+                    (0, 2), (0, 5), (-1, 5), (-1, 5), (-1, 4), (-2, 4), (-1, 4), (-1, 3),
+                    (0, 1), (0, 1), (-1, 1), (0, 1), (0, 1), (0, 0), (0, 0), (0, 0),
+                    (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)
+                    };
+                    break;
+
+                case 5:
+                    interval = 150;
+                    sensitivity = sensitivity * 2.25;
+                    selectedGunRecoilPattern = new List<(double, double)>
+                    {
+                    (1.5, 3.25), (1.25, 4), (1.5, 5.25), (1.25, 5), (1, 4.5), (1, 4.5), (0, 4.5),
+                    (-1, 4), (-2, 3.5), (-2, 3), (0, 0), (-1, 1), (0, 1), (2, 1), (1, 1), (1, 1),
+                    (0, 1), (-1, 0.5), (-1, 1), (-2, 1), (-1, 0.5), (-1.5, 1), (0.5, 1), (0, 1),
+                    (-0.75, 1), (0.5, 1.5), (-1.25, 1.5), (-1.25, 1.5), (1, 1), (0, 2), (-2, 0),
+                    (-1.5, 0), (-1.5, 0.5), (1, 0), (2, 0.25), (1.5, 0), (1, 1), (1, 1), (1, 1),
+                    (1, 1), (1, 1), (0, 1), (0, 1.5), (0, 1), (0, 1.5), (0, 1), (0, 0), (0, 1),
+                    (0, 1), (0, 0.5), (0, 1), (0, 0.5), (0, 1), (0, 0.5), (0, 1), (0, 0.5), (0, 1),
+                    (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)
+                    };
+                    break;
+
+                case 6:
+                    interval = 200;
+                    sensitivity = sensitivity * 2.2;
+                    selectedGunRecoilPattern = new List<(double, double)>
+                    {
+                    (0, 5), (0, 8), (0, 7), (0, 4.5), (0, 3), (0, 3), (0, 3), (0, 3),
+                    (0, 3), (0, 2), (0, 1), (0, 1), (0, 2), (0, 1), (0, 1), (0, 1),
+                    (0, 1.5), (0, 1), (0, 1), (0, 1.5), (0, 1), (0, 1.5), (0, 1), (0, 1), (0, 1),
+                    (0, 1), (0, 1), (0, 1.5), (0, 1), (0, 1.5), (0, 1), (0, 1),
+                    (0, -1), (0, -1), (0, -0.5), (0, -0.5), (0, 0), (0, 0), (0, -0.5),
+                    (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
+                    (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0),
+                    (0, 0), (0, 0)
+                    };
+                    break;
+            }
+
+            foreach ((double offsetX, double offsetY) in selectedGunRecoilPattern)
+            {
+                leftButtonDown = (Control.MouseButtons & MouseButtons.Left) == MouseButtons.Left;
+                rightButtonDown = (Control.MouseButtons & MouseButtons.Right) == MouseButtons.Right;
+                if (leftButtonDown && rightButtonDown)
+                {
+                    double moveX = offsetX / (sensitivity * 0.00101);
+                    double moveY = offsetY / (sensitivity * 0.00101);
+                    Random random = new Random();
+                    int RandomX = random.Next(-5, 5);
+                    int RandomY = random.Next(-5, 5);
+                    moveX = moveX + RandomX;
+                    moveY = moveY + RandomY;
+                    mouse_event(MOUSEEVENTF_MOVE, (uint)moveX, (uint)moveY, 0, 0);
+                    Thread.Sleep(interval);
                 }
             }
+        }
+
+        private async Task StartRecoilLoop()
+        {
+            // Create a new CancellationTokenSource
+            cts = new CancellationTokenSource();
+
+            while (!cts.Token.IsCancellationRequested)
+            {
+                if (PasterSettings["RecoilGun"] != 0)
+                {
+                    leftButtonDown = (Control.MouseButtons & MouseButtons.Left) == MouseButtons.Left;
+                    rightButtonDown = (Control.MouseButtons & MouseButtons.Right) == MouseButtons.Right;
+                    if (leftButtonDown && rightButtonDown)
+                    {
+                        Recoil();
+                    }
+                }
+                await Task.Delay(20);
+            }
+        }
 
         private async Task StartModelCaptureLoop()
         {
@@ -218,6 +347,7 @@ namespace Paster
         private void InitializeMenuPositions()
         {
             AimMenu.Margin = new Thickness(0, 0, 0, 0);
+            RecoilMenu.Margin = new Thickness(560, 0, -560, 0);
         }
 
         private void SetupToggle(AToggle toggle, Action<bool> action, bool initialState)
@@ -266,7 +396,7 @@ namespace Paster
             {
                 MenuPosition position = (MenuPosition)Enum.Parse(typeof(MenuPosition), clickedButton.Tag.ToString());
                 ResetMenuColors();
-                clickedButton.Foreground = (Brush)brushcolor.ConvertFromString("#8b0000");
+                clickedButton.Foreground = (Brush)brushcolor.ConvertFromString("Aquamarine");
                 ApplyMenuAnimations(position);
                 UpdateMenuVisibility(position);
             }
@@ -274,8 +404,8 @@ namespace Paster
 
         private void ResetMenuColors()
         {
-            Selection1.Foreground = 
-                (Brush)brushcolor.ConvertFromString("#8b0000");
+            Selection1.Foreground = Selection2.Foreground =
+                (Brush)brushcolor.ConvertFromString("Aquamarine");
         }
 
         private void ApplyMenuAnimations(MenuPosition position)
@@ -288,6 +418,14 @@ namespace Paster
                     Animator.ObjectShift(TimeSpan.FromMilliseconds(500), MenuHighlighter, MenuHighlighter.Margin, highlighterMargin);
 
                     Animator.ObjectShift(TimeSpan.FromMilliseconds(500), AimMenu, AimMenu.Margin, WinCenter);
+                    Animator.ObjectShift(TimeSpan.FromMilliseconds(500), RecoilMenu, RecoilMenu.Margin, WinLeft);
+                    break;
+                case MenuPosition.RecoilMenu:
+                    highlighterMargin = new Thickness(144, 30, 278, 0);
+                    Animator.ObjectShift(TimeSpan.FromMilliseconds(500), MenuHighlighter, MenuHighlighter.Margin, highlighterMargin);
+
+                    Animator.ObjectShift(TimeSpan.FromMilliseconds(500), AimMenu, AimMenu.Margin, WinLeft);
+                    Animator.ObjectShift(TimeSpan.FromMilliseconds(500), RecoilMenu, RecoilMenu.Margin, WinCenter);
                     break;
             }
         }
@@ -295,6 +433,7 @@ namespace Paster
         private void UpdateMenuVisibility(MenuPosition position)
         {
             AimMenu.Visibility = (position == MenuPosition.AimMenu) ? Visibility.Visible : Visibility.Collapsed;
+            RecoilMenu.Visibility = (position == MenuPosition.RecoilMenu) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         #endregion Menu Controls
@@ -303,6 +442,7 @@ namespace Paster
         private void SetMenuState(bool state)
         {
             AimMenu.IsEnabled = state;
+            RecoilMenu.IsEnabled = state;
         }
 
         private void LoadAimMenu()
@@ -312,6 +452,12 @@ namespace Paster
             Enable_AIAimAligner.Reader.Name = "AimbotToggle";
             SetupToggle(Enable_AIAimAligner, state => Bools.AIAimAligner = state, Bools.AIAimAligner);
             AimScroller.Children.Add(Enable_AIAimAligner);
+
+            AToggle ConstantAimbot = new(this, "Constant Aimbot",
+                "This will enable the AI's ability to align the aim.");
+            ConstantAimbot.Reader.Name = "ConstantAimbot";
+            SetupToggle(ConstantAimbot, state => Bools.ConstantAimbot = state, Bools.ConstantAimbot);
+            AimScroller.Children.Add(ConstantAimbot);
 
             AKeyChanger Change_KeyPress = new("Aim key", "Right");
             Change_KeyPress.Reader.Click += (s, x) =>
@@ -375,6 +521,21 @@ namespace Paster
 
             AimScroller.Children.Add(YOffset);
 
+            ASlider CaptureFPS = new ASlider(this, "AI FPS", "",
+    "",
+    1);
+
+            CaptureFPS.Slider.Minimum = 1;
+            CaptureFPS.Slider.Maximum = 200;
+            CaptureFPS.Slider.Value = PasterSettings["FPSLimit"];
+            CaptureFPS.Slider.TickFrequency = 1;
+            CaptureFPS.Slider.ValueChanged += (s, x) =>
+            {
+                PasterSettings["FPSLimit"] = CaptureFPS.Slider.Value;
+            };
+
+            AimScroller.Children.Add(CaptureFPS);
+
             ASlider FovSlider = new(this, "FOV", "",
             "",
             1);
@@ -391,12 +552,65 @@ namespace Paster
                 {
                     _onnxModel.FovSize = (int)FovSize;
                 }
-                AwfulPropertyChanger.PostNewFOVSize();
             };
 
             AimScroller.Children.Add(FovSlider);
 
             #endregion Aiming Configuration
+        }
+
+        private void LoadRecoilMenu()
+        {
+            ASlider RecoilGun = new ASlider(this, "Weapon", "", "", 1);
+
+            // Mapping slider values to weapon names
+            Dictionary<double, string> weaponNames = new Dictionary<double, string>
+            {
+                { 0, "None" },
+                { 1, "M11" },
+                { 2, "XP54" },
+                { 3, "AKM" },
+                { 4, "FCAR" },
+                { 5, "M60" },
+                { 6, "Lewis Gun" }
+            };
+
+            RecoilGun.Slider.Name = "RecoilGun";
+            RecoilGun.Slider.Minimum = 0;
+            RecoilGun.Slider.Maximum = 6;
+            RecoilGun.Slider.Value = PasterSettings["RecoilGun"];
+            RecoilGun.Slider.TickFrequency = 1;
+            RecoilGun.Slider.ValueChanged += (s, x) =>
+            {
+                PasterSettings["RecoilGun"] = RecoilGun.Slider.Value;
+
+                // Update slider content based on the selected value
+                RecoilGun.AdjustNotifier.Content = weaponNames[RecoilGun.Slider.Value];
+            };
+
+            // Set initial content based on the default value
+            RecoilGun.AdjustNotifier.Content = weaponNames[RecoilGun.Slider.Value];
+
+            RecoilScroller.Children.Add(RecoilGun);
+
+
+            ASlider GameSens = new ASlider(this, "Game Sensitivity", "", "", 1);
+
+            GameSens.Slider.Name = "GameSens";
+            GameSens.Slider.Minimum = 1;
+            GameSens.Slider.Maximum = 100;
+            GameSens.Slider.Value = PasterSettings["GameSens"];
+            GameSens.Slider.TickFrequency = 1;
+            GameSens.Slider.ValueChanged += (s, x) =>
+            {
+                PasterSettings["GameSens"] = GameSens.Slider.Value;
+
+                double sens = GameSens.Slider.Value;
+                sens = sens / 50;
+                sens2 = sens;
+            };
+
+            RecoilScroller.Children.Add(GameSens);
         }
 
         private bool ModelLoadDebounce = false;
@@ -412,7 +626,7 @@ namespace Paster
 
                         // Save the embedded resource to a temporary file
                         string tempFilePath = Path.Combine(Path.GetTempPath(), "load.onnx");
-                        SaveEmbeddedResourceToFile("Spotify.load.onnx", tempFilePath);
+                        SaveEmbeddedResourceToFile("Roblox.load.onnx", tempFilePath);
 
                         // Load the model from the temporary file
                         _onnxModel?.Dispose();
@@ -431,7 +645,7 @@ namespace Paster
             }
             catch (Exception)
             {
-                System.Windows.MessageBox.Show("Installation is corrupt. Please create a Ticket on discord.", "Load Error");
+                System.Windows.MessageBox.Show("Installation is corrupt.", "Load Error");
             }
         }
 
@@ -452,14 +666,6 @@ namespace Paster
                 }
             }
         }
-
-        private void ReloadMenu()
-        {
-            AimScroller.Children.Clear();
-
-            LoadAimMenu();
-        }
-
         #region Window Controls
 
         private void Exit_Click(object sender, RoutedEventArgs e)

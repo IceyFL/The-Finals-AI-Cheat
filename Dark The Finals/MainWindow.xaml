@@ -81,12 +81,26 @@
                                     BorderThickness="0,0,0,0"
                                     Content="Aimbot"
                                     FontFamily="/Paster2Trappy;component/Fonts/#Atkinson Hyperlegible"
-                                    HorizontalAlignment="Center"
+                                    HorizontalAlignment="Left"
                                     Width="50"
                                     materialDesign:RippleAssist.IsDisabled="True"
                                     Foreground="Aquamarine"
                                     Click="Selection_Click"
-                                    Tag="AimMenu" />
+                                    Tag="AimMenu" Margin="35,0,0,0" />
+                            <Button x:Name="Selection2"
+                                    Background="{x:Null}"
+                                    BorderBrush="{x:Null}"
+                                    Padding="0,0,0,0"
+                                    BorderThickness="0,0,0,0"
+                                    Content="Recoil"
+                                    FontFamily="/Dark The Finals;component/Fonts/#Atkinson Hyperlegible"
+                                    HorizontalAlignment="Left"
+                                    Width="50"
+                                    Margin="110,0,0,0"
+                                    materialDesign:RippleAssist.IsDisabled="True"
+                                    Foreground="Aquamarine"
+                                    Click="Selection_Click"
+                                    Tag="RecoilMenu" />
                         </Grid>
                     </Border>
                 </Grid>
@@ -105,6 +119,12 @@
                                   PanningMode="VerticalOnly"
                                   Visibility="Visible" Grid.ColumnSpan="2" Grid.RowSpan="2">
                         <StackPanel x:Name="AimScroller" />
+                    </ScrollViewer>
+                    <ScrollViewer x:Name="RecoilMenu"
+                                  VerticalScrollBarVisibility="Hidden"
+                                  PanningMode="VerticalOnly"
+                                  Visibility="Collapsed" Grid.ColumnSpan="2" Grid.RowSpan="2">
+                        <StackPanel x:Name="RecoilScroller" />
                     </ScrollViewer>
                 </Grid>
             </Grid>

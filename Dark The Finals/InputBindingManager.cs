@@ -3,7 +3,8 @@ using Gma.System.MouseKeyHook;
 using System;
 using System.Windows.Forms;
 
-namespace InputBindings {
+namespace InputBindings
+{
     public class InputBindingManager
     {
         private IKeyboardMouseEvents _mEvents;
