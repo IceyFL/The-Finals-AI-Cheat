@@ -35,4 +35,4 @@ you need to ensure that the file is named load.onnx and that you have set it as 
 
 4. Compile and use
 
-![image](https://github.com/IceyFL/The-Finals-AI-Cheat/assets/82657910/a7cf0c1c-6fce-47df-9d87-8deaa51efcc8)
+![image](https://github.com/IceyFL/The-Finals-AI-Cheat/assets/82657910/776db99e-6499-495d-9a56-c22f21d4cc79)
