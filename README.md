@@ -1,12 +1,8 @@
 # The Finals AI Cheat
 
-<a href="https://discord.gg/MpSKK9epc7"><img src="https://dcbadge.vercel.app/api/server/MpSKK9epc7"/></a>
-
 This is a cheat currently Made for The Finals.
 It is based off of https://github.com/Babyhamsta/Aimmy
 It is currently undetected in the finals and possibly other EAC games.
-
-A compiled version is available for free in my [discord](https://discord.gg/MpSKK9epc7)
 
 
 ![image](https://github.com/IceyFL/The-Finals-AI-Cheat/assets/82657910/a4dbcbda-ae25-4673-bdeb-203b69b4b60a)
