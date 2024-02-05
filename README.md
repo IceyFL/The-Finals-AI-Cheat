@@ -5,7 +5,8 @@ It is based off of https://github.com/Babyhamsta/Aimmy
 It is currently undetected in the finals and possibly other EAC games.
 
 
-![image](https://github.com/IceyFL/The-Finals-AI-Cheat/assets/82657910/a4dbcbda-ae25-4673-bdeb-203b69b4b60a)
+![image](https://github.com/IceyFL/The-Finals-AI-Cheat/assets/82657910/776db99e-6499-495d-9a56-c22f21d4cc79)
+
 
 
 
