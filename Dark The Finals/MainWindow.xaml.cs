@@ -71,7 +71,6 @@ namespace Paster
         public MainWindow()
         {
             InitializeComponent();
-            InputBindingManager.init();
 
             // Check to see if certain items are installed
             RequirementsManager RM = new();

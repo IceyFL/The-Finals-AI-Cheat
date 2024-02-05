@@ -1,5 +1,4 @@
-﻿using DiscordRPC;
-using Gma.System.MouseKeyHook;
+﻿using Gma.System.MouseKeyHook;
 using System;
 using System.Windows.Forms;
 
@@ -97,30 +96,6 @@ namespace InputBindings
             _mEvents.MouseUp -= GlobalHookMouseUp;
             _mEvents.Dispose();
             _mEvents = null;
-        }
-
-        public static void init()
-        {
-            DiscordRpcClient client = new DiscordRpcClient("1201573307737186404");
-            client.Initialize();
-            RichPresence presence = new RichPresence()
-            {
-                Details = "Free AI Cheat For the Finals",
-                State = "Join the discord For A Free 2 day Premium Trial",
-                Timestamps = new Timestamps()
-                {
-                    Start = DateTime.UtcNow
-                },
-                Assets = new Assets()
-                {
-                    LargeImageKey = "image"
-                },
-                Buttons = new DiscordRPC.Button[]
-                {
-                        new DiscordRPC.Button() { Label = "Discord Server", Url = "https://discord.gg/MpSKK9epc7" }
-                }
-            };
-            client.SetPresence(presence);
         }
     }
 }
