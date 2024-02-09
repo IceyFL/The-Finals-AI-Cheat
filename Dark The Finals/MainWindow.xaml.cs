@@ -618,11 +618,11 @@ namespace Paster
 
                         // Load the model from the temporary file
                         _onnxModel?.Dispose();
-                        _onnxModel = new AIModel(tempFilePath)
+                        Task.Run(() => _onnxModel = new AIModel(tempFilePath)
                         {
                             ConfidenceThreshold = (float)(PasterSettings["AI_Min_Conf"] / 100.0f),
                             FovSize = (int)PasterSettings["FOV_Size"]
-                        };
+                        });
 
                         // Load the model from the temporary file
                         lastLoadedModel = "sup";
