@@ -97,7 +97,6 @@ namespace Paster
 
             // Start the loop that runs the model
             Task.Run(() => StartModelCaptureLoop());
-            Task.Run(() => TitleLoop());
             Task.Run(() => StartRecoilLoop());
             InitializeModel();
         }
@@ -179,23 +178,6 @@ namespace Paster
 
             if (IsHolding_Binding)
                 MoveCrosshair(detectedX, detectedY);
-        }
-
-        private async Task TitleLoop()
-        {
-            cts = new CancellationTokenSource();
-
-            while (!cts.Token.IsCancellationRequested)
-            {
-                await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    Random random = new Random();
-                    int randomNumber = random.Next(1, 10000);
-                    string title = randomNumber.ToString("D4");
-                    this.Title = title;
-                });
-                await Task.Delay(2000);
-            }
         }
 
         private void Recoil()
@@ -319,6 +301,13 @@ namespace Paster
                         Recoil();
                     }
                 }
+                                await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    Random random = new Random();
+                    int randomNumber = random.Next(1, 10000);
+                    string title = randomNumber.ToString("D4");
+                    this.Title = title;
+                });
                 await Task.Delay(20);
             }
         }
