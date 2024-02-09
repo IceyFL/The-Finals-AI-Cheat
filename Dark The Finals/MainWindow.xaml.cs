@@ -155,7 +155,7 @@ namespace Paster
             Point newPosition = CubicBezier(start, end, control1, control2, 1 - Alpha);
             Point newPosition2 = CubicBezier(start, end, control3, control4, 1 - Beta);
 
-            mouse_event(MOUSEEVENTF_MOVE, (uint)newPosition.X, (uint)newPosition2.Y, 0, 0);
+            CVE.Mouse.Move(0, (int)newPosition.X, (int)newPosition2.Y, 0);
         }
 
         #endregion Mouse Movement / Clicking Handler
@@ -297,7 +297,7 @@ namespace Paster
                     int RandomY = random.Next(-5, 5);
                     moveX = moveX + RandomX;
                     moveY = moveY + RandomY;
-                    mouse_event(MOUSEEVENTF_MOVE, (uint)moveX, (uint)moveY, 0, 0);
+                    CVE.Mouse.Move(0, (int)moveX, (int)moveY, 0);
                     Thread.Sleep(interval);
                 }
             }
